@@ -1,0 +1,29 @@
+version: "3.8"
+services:
+  flask-app:
+    build: ./backend
+    ports:
+      - "5001:5000"
+    expose:
+      - "5000"
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "3000:3000"
+    stdin_open: true
+    tty: true
+    depends_on:
+      - flask-app
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    command: tunnel --no-autoupdate run --token eyJhIjoiNmVhZmRlYzA5ZjExOGM4OWZhNDNlNmVhOWY1YTllYjkiLCJ0IjoiZTQ2ZjE4NWEtZWQ5NC00M2YwLWE3ZTktOTM4ZjU3ZmE3ZDJmIiwicyI6Ik16SXlOalE0WTJVdFptWTRNaTAwWmpJeUxUZ3dZV0V0WXprNE1HVmhNelV3Tm1ZMiJ9
+    depends_on:
+      - flask-app
+    environment:
+      TUNNEL_HOSTNAME: "mergex.emerginary.com"
+      TUNNEL_SERVICE: "http://flask-app:5000"
+    restart: unless-stopped

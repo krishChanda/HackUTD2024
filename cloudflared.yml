@@ -1,5 +1,0 @@
-tunnel: my-database-tunnel
-ingress:
-  - hostname: mysql.emerginary.com
-    service: tcp://127.0.0.1:3306
-  - service: http_status:404
