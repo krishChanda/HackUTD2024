@@ -18,10 +18,10 @@ export default function DatabaseModal({ onClose, onConnect }) {
   const handleSubmit = async () => {
     try {
       const response = await axios.post("http://localhost:5000/connect-db", credentials);
-      onConnect(true);
+      onConnect(true, credentials.serverAddress);
       alert(response.data.message);
     } catch (err) {
-      onConnect(false);
+      onConnect(false, "");
       alert(err.response.data.message);
     }
   };
