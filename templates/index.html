@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f4f4f4;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>Database Viewer</h1>
+    <form method="POST">
+        <label for="host">Host:</label>
+        <input type="text" id="host" name="host" placeholder="127.0.0.1" required><br><br>
+        
+        <label for="port">Port:</label>
+        <input type="text" id="port" name="port" placeholder="3306" required><br><br>
+        
+        <label for="user">User:</label>
+        <input type="text" id="user" name="user" placeholder="root" required><br><br>
+        
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br><br>
+        
+        <label for="database">Database:</label>
+        <input type="text" id="database" name="database" required><br><br>
+        
+        <button type="submit">Connect</button>
+    </form>
+
+    {% if data %}
+        {% for table in data %}
+            {% if table.error %}
+                <h2>Error</h2>
+                <p>{{ table.error }}</p>
+            {% else %}
+                <h2>Table: {{ table.table_name }}</h2>
+                <table>
+                    <tr>
+                        {% for col in table.records[0] %}
+                        <th>Column {{ loop.index }}</th>
+                        {% endfor %}
+                    </tr>
+                    {% for row in table.records %}
+                    <tr>
+                        {% for col in row %}
+                        <td>{{ col }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </table>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+</body>
+</html>

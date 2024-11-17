@@ -1,11 +1,12 @@
 version: "3.8"
 
 services:
-  database-access:
+  flask-app:
     build:
       context: .
+      dockerfile: Dockerfile
     ports:
-      - "9210:9210"  # Map the tunnel port
+      - "5001:5000"  # Map container port 5000 to host port 5001
     environment:
-      - TUNNEL_HOSTNAME=mysql.emerginary.com
-      - TUNNEL_URL=127.0.0.1:9210
+      - FLASK_ENV=development
+
