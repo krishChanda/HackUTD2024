@@ -1,19 +1,21 @@
 /* Simulation.css */
+
+/* General Layout */
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background-color: #333; /* Dark background for contrast */
+    background-color: #333;
 }
 
 .simulation-container {
     display: flex;
     flex-direction: column;
     height: 100vh;
-    background-color: #f6d8cb; /* Light peach background */
+    background-color: #f6d8cb;
 }
 
 .header {
-    background-color: #d97a54; /* Orange header */
+    background-color: #d97a54;
     color: white;
     padding: 10px 20px;
     font-size: 1.5rem;
@@ -35,33 +37,71 @@ body {
     gap: 20px;
 }
 
+/* Sidebar */
 .sidebar {
-    width: 20%; /* Fixed width for buttons */
+    width: 25%;
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    justify-content: flex-start;
+    gap: 20px;
+    background-color: #f6d8cb;
+    padding: 10px;
+    border-radius: 10px;
 }
 
-.sidebar button {
-    background-color: #d97a54;
-    border: none;
-    color: white;
-    font-size: 1rem;
-    padding: 15px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    text-align: left;
-    font-weight: bold;
+.database-selection {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.database-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
 }
 
-.sidebar button:hover {
-    background-color: #b55e42;
+.collapse-button {
+    background-color: #d97a54;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
 }
 
+.table-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.table-item label {
+    font-size: 0.9rem;
+    color: #333;
+}
+
+.run-sim-button {
+    background-color: #4caf50;
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.run-sim-button:hover {
+    background-color: #45a049;
+}
+
+/* Database View */
 .database-view {
     flex: 1;
     background-color: white;
@@ -69,17 +109,49 @@ body {
     padding: 20px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
 }
 
-.sim-results-container {
+.dynamic-grid-container {
     display: flex;
-    justify-content: flex-end;
-    padding: 15px;
-    height: 200px;
+    gap: 20px;
+    padding: 10px 0;
+}
+
+.database-column {
+    background-color: #f9a825; /* Adjust for each database's color */
+    border-radius: 10px;
+    padding: 10px;
+    width: 45%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    color: white;
+}
+
+.database-column h3 {
+    font-size: 1rem;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 10px;
+}
+
+.card {
+    background-color: #fff;
+    color: #333;
+    padding: 10px;
+    text-align: center;
+    border-radius: 5px;
+    font-size: 0.8rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* SIM Results */
+.sim-results-container {
+    margin-top: 20px;
+    padding: 0 20px;
 }
 
 .sim-results {
@@ -88,11 +160,9 @@ body {
     border-radius: 10px;
     padding: 20px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     text-align: center;
-    margin-top: 20px; /* Add spacing between DATABASE VIEW and SIM RESULTS */
+    font-size: 1rem;
 }
+
+
 
