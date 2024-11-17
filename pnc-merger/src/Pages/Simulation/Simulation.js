@@ -8,6 +8,18 @@ function Simulation() {
         "Database B": ["Table A", "Table B", "Table C"],
     };
 
+    // State for Database B form and visibility
+    const [showForm, setShowForm] = useState(true);
+
+    // State to handle form data for Database B
+    const [formData, setFormData] = useState({
+        host: "",
+        port: "",
+        user: "",
+        password: "",
+        database: "",
+    });
+
     // State to handle collapse/expand functionality for each database
     const [collapsed, setCollapsed] = useState({
         "Database A": false,
@@ -58,6 +70,22 @@ function Simulation() {
 
     const selectedForView = getSelectedTables();
 
+    // Handle form input changes
+    const handleFormChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prevData) => ({
+            ...prevData,
+            [name]: value,
+        }));
+    };
+
+    // Handle form submission
+    const handleFormSubmit = (e) => {
+        e.preventDefault();
+        console.log("Form Data Submitted: ", formData);
+        setShowForm(false); // Hide form and show Database B UI
+    };
+
     return (
         <div className="simulation-container">
             <div className="header">
@@ -77,23 +105,82 @@ function Simulation() {
                                     {collapsed[dbName] ? "+" : "-"}
                                 </button>
                             </div>
-                            {!collapsed[dbName] && (
-                                <div className="table-list">
-                                    {databases[dbName].map((table, idx) => (
-                                        <div key={idx} className="table-item">
-                                            <label>
-                                                <input
-                                                    type="checkbox"
-                                                    checked={selectedTables[dbName][table]}
-                                                    onChange={() =>
-                                                        toggleTableSelection(dbName, table)
-                                                    }
-                                                />{" "}
-                                                {table}
-                                            </label>
-                                        </div>
-                                    ))}
-                                </div>
+                            {!collapsed[dbName] && dbName === "Database B" && showForm ? (
+                                <form onSubmit={handleFormSubmit} className="database-form">
+                                    <h3>Database B Connection</h3>
+                                    <label>
+                                        Host:
+                                        <input
+                                            type="text"
+                                            name="host"
+                                            value={formData.host}
+                                            onChange={handleFormChange}
+                                            required
+                                        />
+                                    </label>
+                                    <label>
+                                        Port:
+                                        <input
+                                            type="number"
+                                            name="port"
+                                            value={formData.port}
+                                            onChange={handleFormChange}
+                                            required
+                                        />
+                                    </label>
+                                    <label>
+                                        User:
+                                        <input
+                                            type="text"
+                                            name="user"
+                                            value={formData.user}
+                                            onChange={handleFormChange}
+                                            required
+                                        />
+                                    </label>
+                                    <label>
+                                        Password:
+                                        <input
+                                            type="password"
+                                            name="password"
+                                            value={formData.password}
+                                            onChange={handleFormChange}
+                                            required
+                                        />
+                                    </label>
+                                    <label>
+                                        Database:
+                                        <input
+                                            type="text"
+                                            name="database"
+                                            value={formData.database}
+                                            onChange={handleFormChange}
+                                            required
+                                        />
+                                    </label>
+                                    <button type="submit" className="submit-button">
+                                        Submit
+                                    </button>
+                                </form>
+                            ) : (
+                                !collapsed[dbName] && (
+                                    <div className="table-list">
+                                        {databases[dbName].map((table, idx) => (
+                                            <div key={idx} className="table-item">
+                                                <label>
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={selectedTables[dbName][table]}
+                                                        onChange={() =>
+                                                            toggleTableSelection(dbName, table)
+                                                        }
+                                                    />{" "}
+                                                    {table}
+                                                </label>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )
                             )}
                         </div>
                     ))}
@@ -125,3 +212,4 @@ function Simulation() {
 }
 
 export default Simulation;
+
