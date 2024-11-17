@@ -1,0 +1,98 @@
+/* Simulation.css */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #333; /* Dark background for contrast */
+}
+
+.simulation-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-color: #f6d8cb; /* Light peach background */
+}
+
+.header {
+    background-color: #d97a54; /* Orange header */
+    color: white;
+    padding: 10px 20px;
+    font-size: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header .project-name {
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.main-content {
+    display: flex;
+    flex: 1;
+    padding: 20px;
+    gap: 20px;
+}
+
+.sidebar {
+    width: 20%; /* Fixed width for buttons */
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: flex-start;
+}
+
+.sidebar button {
+    background-color: #d97a54;
+    border: none;
+    color: white;
+    font-size: 1rem;
+    padding: 15px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: left;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sidebar button:hover {
+    background-color: #b55e42;
+}
+
+.database-view {
+    flex: 1;
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.sim-results-container {
+    display: flex;
+    justify-content: flex-end;
+    padding: 15px;
+    height: 200px;
+}
+
+.sim-results {
+    flex: 1;
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin-top: 20px; /* Add spacing between DATABASE VIEW and SIM RESULTS */
+}
+
