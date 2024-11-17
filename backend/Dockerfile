@@ -1,8 +1,14 @@
 # Base image
 FROM python:3.10-slim
 
+# Set environment variables to avoid interactive prompts
+ENV DEBIAN_FRONTEND=noninteractive
+
 # Install system dependencies
-RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && \
+    apt-get install -y curl && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Install Cloudflared
 RUN curl -L https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 -o /usr/local/bin/cloudflared && \
@@ -11,9 +17,10 @@ RUN curl -L https://github.com/cloudflare/cloudflared/releases/latest/download/c
 # Set the working directory
 WORKDIR /app
 
-# Copy the requirements file and install dependencies with debug
+# Copy the requirements file and install dependencies
 COPY requirements.txt /app/requirements.txt
-RUN pip list && pip install --upgrade pip && pip install --no-cache-dir -r /app/requirements.txt && pip list
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir -r /app/requirements.txt
 
 # Copy application files
 COPY app.py /app/app.py

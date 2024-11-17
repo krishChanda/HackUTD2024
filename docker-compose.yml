@@ -1,29 +1,29 @@
 version: "3.8"
+
 services:
   flask-app:
-    build: ./backend
+    build:
+      context: ./backend
     ports:
-      - "5001:5000"
+      - "5001:5000"  # Flask app exposed here
     expose:
-      - "5000"
+      - "5000"       # Makes Flask accessible within the internal Docker network
     restart: unless-stopped
 
   frontend:
     build:
       context: ./frontend
     ports:
-      - "3000:3000"
-    stdin_open: true
-    tty: true
-    depends_on:
-      - flask-app
+      - "3000:80"    # Expose React frontend on port 3000 for external access
+    restart: unless-stopped
 
   cloudflared:
     image: cloudflare/cloudflared:latest
     command: tunnel --no-autoupdate run --token eyJhIjoiNmVhZmRlYzA5ZjExOGM4OWZhNDNlNmVhOWY1YTllYjkiLCJ0IjoiZTQ2ZjE4NWEtZWQ5NC00M2YwLWE3ZTktOTM4ZjU3ZmE3ZDJmIiwicyI6Ik16SXlOalE0WTJVdFptWTRNaTAwWmpJeUxUZ3dZV0V0WXprNE1HVmhNelV3Tm1ZMiJ9
     depends_on:
       - flask-app
+      - frontend
     environment:
       TUNNEL_HOSTNAME: "mergex.emerginary.com"
-      TUNNEL_SERVICE: "http://flask-app:5000"
+      TUNNEL_SERVICE: "http://frontend:80"  # Direct traffic to the frontend service
     restart: unless-stopped
