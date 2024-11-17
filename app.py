@@ -1,13 +1,25 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, make_response
 import mysql.connector
 import random
 
 app = Flask(__name__)
 
+@app.after_request
+def add_no_cache_headers(response):
+    """Add headers to prevent caching."""
+    response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "-1"
+    return response
+
 @app.route("/", methods=["GET", "POST"])
 def index():
+    # Clear data at the start of every request
     data = []
+    error_message = None
+
     if request.method == "POST":
+        # Collect form inputs
         host = request.form["host"]
         port = request.form["port"]
         user = request.form["user"]
@@ -15,6 +27,7 @@ def index():
         database = request.form["database"]
 
         try:
+            # Establish database connection
             connection = mysql.connector.connect(
                 host=host,
                 port=int(port),
@@ -47,12 +60,12 @@ def index():
 
                 cursor.close()
         except mysql.connector.Error as err:
-            data.append({"error": f"Error: {err}"})
+            error_message = f"Error: {err}"
         finally:
             if "connection" in locals() and connection.is_connected():
                 connection.close()
 
-    return render_template("index.html", data=data)
+    return render_template("index.html", data=data, error_message=error_message)
 
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0")
+    app.run(host="0.0.0.0", port=5000, debug=True)

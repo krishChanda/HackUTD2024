@@ -22,6 +22,14 @@
             background-color: #f4f4f4;
             text-align: left;
         }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+        .message {
+            color: blue;
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
@@ -45,29 +53,39 @@
         <button type="submit">Connect</button>
     </form>
 
+    {% if error_message %}
+        <p class="error">{{ error_message }}</p>
+    {% endif %}
+
     {% if data %}
         {% for table in data %}
             {% if table.error %}
-                <h2>Error</h2>
-                <p>{{ table.error }}</p>
+                <h2 class="error">Error</h2>
+                <p class="error">{{ table.error }}</p>
             {% else %}
                 <h2>Table: {{ table.table_name }}</h2>
-                <table>
-                    <tr>
-                        {% for col in table.records[0] %}
-                        <th>Column {{ loop.index }}</th>
+                {% if table.records[0] == "Table is empty." %}
+                    <p class="message">This table is empty.</p>
+                {% else %}
+                    <table>
+                        <tr>
+                            {% for col in table.records[0] %}
+                            <th>Column {{ loop.index }}</th>
+                            {% endfor %}
+                        </tr>
+                        {% for row in table.records %}
+                        <tr>
+                            {% for col in row %}
+                            <td>{{ col }}</td>
+                            {% endfor %}
+                        </tr>
                         {% endfor %}
-                    </tr>
-                    {% for row in table.records %}
-                    <tr>
-                        {% for col in row %}
-                        <td>{{ col }}</td>
-                        {% endfor %}
-                    </tr>
-                    {% endfor %}
-                </table>
+                    </table>
+                {% endif %}
             {% endif %}
         {% endfor %}
+    {% else %}
+        <p class="message">No data to display. Please connect to the database above.</p>
     {% endif %}
 </body>
 </html>
