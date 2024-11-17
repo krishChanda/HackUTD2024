@@ -1,10 +1,8 @@
-from flask import Flask, request, jsonify
+from flask import Flask, render_template, request, make_response
 import mysql.connector
 import random
-from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS to allow requests from the frontend
 
 @app.after_request
 def add_no_cache_headers(response):
@@ -14,81 +12,60 @@ def add_no_cache_headers(response):
     response.headers["Expires"] = "-1"
     return response
 
-@app.route("/connect-database", methods=["POST"])
-def connect_database():
-    """
-    Connect to the database and return table information.
-    Endpoint: /connect-database
-    Method: POST
-    """
-    data = []  # List to store table data
+@app.route("/", methods=["GET", "POST"])
+def index():
+    # Clear data at the start of every request
+    data = []
     error_message = None
 
-    # Collect form inputs from the frontend
-    request_data = request.get_json()
-    host = request_data.get("host")
-    port = request_data.get("port")
-    user = request_data.get("user")
-    password = request_data.get("password")
-    database = request_data.get("database")
+    if request.method == "POST":
+        # Collect form inputs
+        host = request.form["host"]
+        port = request.form["port"]
+        user = request.form["user"]
+        password = request.form["password"]
+        database = request.form["database"]
 
-    app.logger.info("Received request to connect to database.")
-    app.logger.info(f"Host: {host}, Port: {port}, User: {user}, Database: {database}")
+        try:
+            # Establish database connection
+            connection = mysql.connector.connect(
+                host=host,
+                port=int(port),
+                user=user,
+                password=password,
+                database=database
+            )
+            if connection.is_connected():
+                cursor = connection.cursor()
 
-    try:
-        # Establish database connection
-        connection = mysql.connector.connect(
-            host=host,
-            port=int(port),
-            user=user,
-            password=password,
-            database=database
-        )
-        if connection.is_connected():
-            app.logger.info(f"Successfully connected to the database: {database}")
+                # Fetch all table names
+                cursor.execute("SHOW TABLES")
+                tables = cursor.fetchall()
 
-            cursor = connection.cursor()
-
-            # Fetch all table names
-            cursor.execute("SHOW TABLES")
-            tables = cursor.fetchall()
-
-            if tables:
                 for table in tables:
                     table_name = table[0]
-                    data.append(table_name)  # Append table names to the response
-                app.logger.info(f"Fetched tables: {data}")
-            else:
-                app.logger.warning("No tables found in the database.")
 
-            cursor.close()
-        else:
-            error_message = "Failed to connect to the database."
-            app.logger.error(error_message)
-    except mysql.connector.Error as err:
-        error_message = f"Database connection error: {err}"
-        app.logger.error(error_message)
-    except Exception as ex:
-        error_message = f"Unexpected error: {ex}"
-        app.logger.error(error_message)
-    finally:
-        if "connection" in locals() and connection.is_connected():
-            connection.close()
-            app.logger.info("Database connection closed.")
+                    # Get the number of rows in the table
+                    cursor.execute(f"SELECT COUNT(*) FROM `{table_name}`")
+                    total_rows = cursor.fetchone()[0]
 
-    # Return success or error response
-    if error_message:
-        return jsonify({"success": False, "error": error_message}), 400
-    return jsonify({"success": True, "data": data}), 200
+                    # Fetch up to 50 random records
+                    if total_rows > 0:
+                        offset = max(0, random.randint(0, total_rows - 50))
+                        cursor.execute(f"SELECT * FROM `{table_name}` LIMIT 50 OFFSET {offset}")
+                        rows = cursor.fetchall()
+                        data.append({"table_name": table_name, "records": rows})
+                    else:
+                        data.append({"table_name": table_name, "records": ["Table is empty."]})
 
-@app.route("/health", methods=["GET"])
-def health_check():
-    """
-    Health check endpoint for the backend.
-    Endpoint: /health
-    Method: GET
-    """
-    return jsonify({"status": "ok", "message": "Backend is running."}), 200
+                cursor.close()
+        except mysql.connector.Error as err:
+            error_message = f"Error: {err}"
+        finally:
+            if "connection" in locals() and connection.is_connected():
+                connection.close()
+
+    return render_template("index.html", data=data, error_message=error_message)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
