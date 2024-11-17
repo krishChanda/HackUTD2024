@@ -50,7 +50,7 @@ function DataAnalytics() {
             },
             {
                 label: "Errors",
-                data: [1500, 1700, 1600, 1800, 2000],
+                data: [1500, 1700, 1600, 1500, 1200],
                 borderColor: "#36A2EB",
                 backgroundColor: "rgba(54, 162, 235, 0.5)",
                 tension: 0.4,
@@ -59,7 +59,7 @@ function DataAnalytics() {
     };
 
     return (
-        <div style={{ padding: "20px", textAlign: "center" }}>
+        <div style={{ padding: "20px", textAlign: "center", backgroundColor: "#f6d8cb"}}>
             <h1>Data Analytics</h1>
             <p>Visualization of Data</p>
             
